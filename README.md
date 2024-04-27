@@ -25,13 +25,18 @@ python3 -m venv build_env
 source build_env/bin/activate
 ```
 
-3. Generate the command lis
+3. Generate the command list
 ```bash
 (build_env) $ python3 generate_matter_config.py
 ```
 
 
-4. When finished, get out of the env. Here’s how you deactivate a virtual environment:
+3. Generate the database seed sql
+```bash
+(build_env) $ python3 generate_cluster_defs_sql.py
+```
+
+5. When finished, get out of the env. Here’s how you deactivate a virtual environment:
 
 ```bash
 (build_env) $ deactivate

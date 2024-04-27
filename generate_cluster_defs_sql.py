@@ -79,7 +79,7 @@ def processClusterXML(clusterXmlFile):
         output.append(clusterSqlStr)
 
         if 'attribute' not in cluster: 
-            break #skip if there are no commands
+            break #skip if there are no attributes
 
         if not isinstance(cluster['attribute'], list):
             cluster['attribute'] = [cluster['attribute']]
@@ -103,12 +103,22 @@ def processClusterXML(clusterXmlFile):
                 print("An exception occurred")
 
 
+                #put in the standard attributes in every cluster
+        attributeSqlStr =  """
+  (65528,'GeneratedCommandList','server',{cluster_code}),
+  (65529,'AcceptedCommandList','server',{cluster_code}),
+  (65530,'EventList','server',{cluster_code}),
+  (65531,'AttributeList','server',{cluster_code}),
+  (65532,'FeatureMap','server',{cluster_code}),
+  (65533,'ClusterRevision','server',{cluster_code}),""".format(cluster_code=clusterCode)
+        output2.append(attributeSqlStr)
+
     #Concatentate the cluster definition SQL
     formattedClusterSql = "".join(output)
     # Find the index of the last comma
     last_comma_index = formattedClusterSql.rfind(',')
     # Replace the last comma with a semicolon
-    formattedClusterSql = formattedClusterSql[:last_comma_index] + ';' + formattedClusterSql[last_comma_index + 1:]
+    formattedClusterSql = formattedClusterSql[:last_comma_index] + ' ON CONFLICT (code) DO NOTHING;' + formattedClusterSql[last_comma_index + 1:]
     print(formattedClusterSql)
 
     #Concatentate the attribute definition SQL
@@ -116,7 +126,7 @@ def processClusterXML(clusterXmlFile):
     # Find the index of the last comma
     last_comma_index = formattedAttributeSql.rfind(',')
     # Replace the last comma with a semicolon
-    formattedAttributeSql = formattedAttributeSql[:last_comma_index] + ';' + formattedAttributeSql[last_comma_index + 1:]
+    formattedAttributeSql = formattedAttributeSql[:last_comma_index] + ' ON CONFLICT DO NOTHING;' + formattedAttributeSql[last_comma_index + 1:]
     print(formattedAttributeSql)
 
     
